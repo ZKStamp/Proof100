@@ -119,6 +119,7 @@ The first run scans the chain from block 1,862,000 for that viewing key, which c
   - `Proof100Core.py`: accounts, payment watch, making proofs
   - `Proof100Api.py`: REST API and MCP endpoint (listens on 127.0.0.1:5100)
   - `CheckPayments.py`, `CreateAccount.py`, `HealthCheck.py`
+  - `GrantProofs.py`: operator tool, creates an account with free proofs (for testers)
 - `deploy/`: example systemd units, nginx site and config templates.
 - `zcheck/ZCheck.py`: the verifier.
 
