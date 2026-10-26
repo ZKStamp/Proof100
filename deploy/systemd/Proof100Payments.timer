@@ -1,0 +1,9 @@
+[Unit]
+Description=Run Proof-100 payment watch every minute
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=1min
+
+[Install]
+WantedBy=timers.target

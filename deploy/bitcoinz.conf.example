@@ -1,0 +1,8 @@
+rpcuser=CHANGE_ME
+rpcpassword=CHANGE_ME_LONG_RANDOM
+rpcallowip=127.0.0.1
+rpcbind=127.0.0.1
+rpcport=8342
+port=8343
+server=1
+daemon=1

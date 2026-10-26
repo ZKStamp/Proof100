@@ -1,0 +1,10 @@
+# Never publish secrets or live data
+*.db
+*.db-journal
+Proof100Config.json
+HealthState.json
+env
+.env
+*.log
+__pycache__/
+*.pyc

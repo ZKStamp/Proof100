@@ -1,0 +1,12 @@
+[Unit]
+Description=Proof-100 API (local only)
+After=bitcoinzd.service
+
+[Service]
+WorkingDirectory=/root/proof100
+ExecStart=/usr/bin/python3 /root/proof100/Proof100Api.py
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

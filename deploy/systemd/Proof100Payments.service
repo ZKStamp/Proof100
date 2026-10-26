@@ -1,0 +1,8 @@
+[Unit]
+Description=Proof-100 payment watch
+After=bitcoinzd.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/root/proof100
+ExecStart=/usr/bin/python3 /root/proof100/CheckPayments.py

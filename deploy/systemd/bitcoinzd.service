@@ -1,0 +1,16 @@
+[Unit]
+Description=BitcoinZ node (issuing wallet)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/root/bitcoinz/src/bitcoinzd -datadir=/root/.bitcoinz-issuing -daemon=0
+ExecStop=/root/bitcoinz/src/bitcoinz-cli -datadir=/root/.bitcoinz-issuing stop
+Restart=on-failure
+RestartSec=30
+TimeoutStopSec=300
+
+[Install]
+WantedBy=multi-user.target
