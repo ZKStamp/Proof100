@@ -2,6 +2,8 @@
 
 **Stamp it with Z. Before Q.**
 
+🎬 **Watch the 60-second demo:** [an AI agent stamps an idea, then ZCheck says VALID, and NOT VALID with one letter changed](https://youtu.be/t2G2CUKyamo)
+
 Proof-100 writes the SHA-256 fingerprint of any file to the BitcoinZ blockchain in a shielded (zk-SNARK) transaction. You get a dated proof that the file existed, and nobody on the blockchain can see the fingerprint or who made it.
 
 - **ZKStamp** is the brand.
