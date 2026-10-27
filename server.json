@@ -1,0 +1,26 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.ZKStamp/proof100",
+  "title": "ZKStamp Proof-100",
+  "description": "Shielded proof-of-existence timestamps on the BitcoinZ blockchain (zk-SNARKs).",
+  "repository": {
+    "url": "https://github.com/ZKStamp/Proof100",
+    "source": "github"
+  },
+  "websiteUrl": "https://proof.zketernity.app/llms.txt",
+  "version": "0.1.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://proof.zketernity.app/mcp",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Bearer followed by your Proof-100 account key (starts with p100_)",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}
