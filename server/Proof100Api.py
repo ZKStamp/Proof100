@@ -41,9 +41,11 @@ def account():
 
 TOOLS = [
     {"name": "timestamp_fingerprint",
-     "description": "Write a SHA-256 fingerprint privately (shielded, zk-SNARKs) on the BitcoinZ blockchain. Returns the transaction ID and a viewing key for this one proof. Keep both: together they let anyone you choose verify this proof, and nothing else. Uses 1 Proof-100 proof.",
+     "description": "Create a private, dated proof that a file or data existed, without sending the data. Use this when you already have the SHA-256 fingerprint (hash) of a file; for a short text, use timestamp_text instead. Compute the hash locally over the exact bytes (for example: sha256sum MyFile.pdf) and pass the 64-character hex string. The fingerprint is written into the encrypted memo of a shielded (zk-SNARK) BitcoinZ transaction, sent to a new address made for this proof only; the block timestamp dates it. Takes about 10 to 60 seconds and uses 1 proof from the account (requires the account key in the Authorization header). Returns ok, txid, viewing_key, explorer link and proofs_left. Tell the user to keep the txid and viewing_key: together they let anyone verify this one proof with ZCheck, and reveal nothing else. On error (invalid fingerprint, invalid key, no proofs left, send failed) no proof is used.",
      "inputSchema": {"type": "object",
-                     "properties": {"fingerprint": {"type": "string", "description": "64-character SHA-256 hex string"}},
+                     "properties": {"fingerprint": {"type": "string",
+                                                    "description": "SHA-256 hash of the file, as 64 hexadecimal characters (case-insensitive), e.g. 968c796b7f8c9259ee92d7168d882df2f347d9711a51da90182c98d69139cdb7",
+                                                    "pattern": "^[0-9a-fA-F]{64}$"}},
                      "required": ["fingerprint"]}},
     {"name": "timestamp_text",
      "description": "Compute the SHA-256 fingerprint of a short text on the Proof-100 server (the text is not stored), then write that fingerprint privately on the BitcoinZ blockchain. Returns the fingerprint, the transaction ID and a viewing key for this one proof. Keep the viewing key: with the txid it reveals this proof only. Uses 1 proof.",
