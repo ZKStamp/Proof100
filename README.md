@@ -38,6 +38,8 @@ curl -s -X POST https://proof.zketernity.app/v1/account
 
 Returns `key` (starts with `p100_`) and `deposit_address`.
 
+**Free trial:** new accounts get **3 free proofs**, no payment needed (limited to 13 new trial accounts per day, until 27 November 2026). The response shows `free_proofs`.
+
 **2. Buy proofs:** send **500,000 BTCZ** to your `deposit_address`. After 2 confirmations, **100 proofs** are credited automatically.
 
 **3. Check your balance:**

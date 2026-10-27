@@ -6,6 +6,11 @@ DB = "/root/proof100/Proof100.db"
 PACK_PRICE_ZAT = 50000000000000   # 500,000 BTCZ per pack (set 26 Oct 2026)
 PROOFS_PER_PACK = 100
 MINCONF = 2
+# Free trial (decided 27 Oct 2026): 3 free proofs for new accounts,
+# max 13 trial accounts per UTC day, until 27 Nov 2026 (then review).
+TRIAL_PROOFS = 3
+TRIAL_PER_DAY = 13
+TRIAL_END = "2026-11-27"
 
 def db():
     con = sqlite3.connect(DB)
@@ -16,7 +21,8 @@ def db():
         proofs_left INTEGER NOT NULL DEFAULT 0,
         created_at TEXT NOT NULL)""")
     for col in ["received_zat INTEGER NOT NULL DEFAULT 0",
-                "packs_credited INTEGER NOT NULL DEFAULT 0"]:
+                "packs_credited INTEGER NOT NULL DEFAULT 0",
+                "trial INTEGER NOT NULL DEFAULT 0"]:
         try:
             con.execute("ALTER TABLE accounts ADD COLUMN " + col)
         except sqlite3.OperationalError:
@@ -35,15 +41,26 @@ def hash_key(key):
 def now():
     return datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
 
-def create_account():
+def create_account(trial=False):
+    """Create an account. With trial=True, grant TRIAL_PROOFS free proofs
+    if the trial is still running and today's cap is not reached.
+    Returns (key, address, free_proofs_granted)."""
     key = "p100_" + secrets.token_urlsafe(32)
     address = cli("z_getnewaddress")
     con = db()
+    stamp = now()
+    today = stamp[:10]
+    free = 0
     with con:
-        con.execute("INSERT INTO accounts(key_hash, deposit_address, created_at) VALUES (?,?,?)",
-                    (hash_key(key), address, now()))
+        if trial and today < TRIAL_END:
+            used = con.execute("SELECT COUNT(*) FROM accounts WHERE trial=1 AND substr(created_at,1,10)=?",
+                               (today,)).fetchone()[0]
+            if used < TRIAL_PER_DAY:
+                free = TRIAL_PROOFS
+        con.execute("INSERT INTO accounts(key_hash, deposit_address, created_at, proofs_left, trial) VALUES (?,?,?,?,?)",
+                    (hash_key(key), address, stamp, free, 1 if free else 0))
     con.close()
-    return key, address
+    return key, address, free
 
 def check_payments():
     con = db()

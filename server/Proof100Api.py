@@ -32,9 +32,12 @@ def balance():
 
 @app.route("/v1/account", methods=["POST"])
 def account():
-    key, addr = create_account()
+    key, addr, free = create_account(trial=True)
+    note = "Save your key now: it is shown only once."
+    if free:
+        note += " Free trial: %d proofs credited, no payment needed." % free
     return jsonify({"ok": True, "key": key, "deposit_address": addr,
-                    "note": "Save your key now: it is shown only once."})
+                    "free_proofs": free, "note": note})
 
 TOOLS = [
     {"name": "timestamp_fingerprint",
