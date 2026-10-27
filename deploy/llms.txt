@@ -8,6 +8,7 @@ Key facts:
 - MCP endpoint (for AI agents): https://proof.zketernity.app/mcp
 - REST API: https://proof.zketernity.app/v1/
 - Price: 500,000 BTCZ for a pack of 100 proofs, paid in BTCZ only. No card, no email, no account name.
+- Contact: contact@z-text.com. Questions, or no BTCZ yet? Write in, and we'll help you find where to get BTCZ.
 - Your file never leaves your machine: only its SHA-256 fingerprint (64 hex characters) is sent.
 - Each proof goes to a brand-new shielded address. You get back a transaction ID (txid) and that address's viewing key.
 - To reveal one proof, share its txid and viewing key. They reveal that one proof and nothing else.

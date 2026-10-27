@@ -103,6 +103,8 @@ The first run scans the chain from block 1,862,000 for that viewing key, which c
 
 **500,000 BTCZ for 100 proofs**, paid in BTCZ only. No card, no email, no account name.
 
+Questions, or no BTCZ yet? Write to contact@z-text.com. We'll help you find where to get BTCZ.
+
 ---
 
 ## Trust model and honest limits
@@ -126,6 +128,12 @@ The first run scans the chain from block 1,862,000 for that viewing key, which c
 - `zcheck/ZCheck.py`: the verifier.
 
 Requirements: a synced BitcoinZ node (2.3.1 or later) with a funded shielded address, Python 3 with `flask` and `requests`, and nginx with a TLS certificate. Never commit `Proof100Config.json`, the database, or any key.
+
+---
+
+## Contact
+
+contact@z-text.com (Z-TEXT LLC)
 
 ---
 
