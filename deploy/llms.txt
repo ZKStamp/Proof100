@@ -1,0 +1,58 @@
+# ZKStamp Proof-100
+
+> Proof-100 writes the SHA-256 fingerprint of any file or text to the BitcoinZ blockchain in a shielded (zk-SNARK) transaction. You get a dated proof that the data existed at that time. Nobody on the blockchain can see the fingerprint or who made it. AI agents can use it directly through MCP. Slogan: "Stamp it with Z. Before Q."
+
+Key facts:
+
+- Service base URL: https://proof.zketernity.app
+- MCP endpoint (for AI agents): https://proof.zketernity.app/mcp
+- REST API: https://proof.zketernity.app/v1/
+- Price: 500,000 BTCZ for a pack of 100 proofs, paid in BTCZ only. No card, no email, no account name.
+- Your file never leaves your machine: only its SHA-256 fingerprint (64 hex characters) is sent.
+- Each proof goes to a brand-new shielded address. You get back a transaction ID (txid) and that address's viewing key.
+- To reveal one proof, share its txid and viewing key. They reveal that one proof and nothing else.
+- Keep the viewing key. Without it, that proof cannot be revealed.
+- A proof takes about 10 to 60 seconds. The block timestamp dates it.
+- Anyone can verify a proof with ZCheck on their own BitcoinZ node, without trusting the operator.
+- Operator: Z-TEXT LLC. Code is open source (MIT license).
+
+## MCP tools
+
+- timestamp_fingerprint: timestamp a SHA-256 fingerprint. Returns txid and viewing key.
+- timestamp_text: the server hashes a short text (the text is not stored) and timestamps the fingerprint.
+- check_balance: proofs left and the account's deposit address.
+
+Authentication: send the account key as the header `Authorization: Bearer <key>` (or `X-API-Key: <key>`). Keys start with `p100_`.
+
+## REST API
+
+- POST /v1/account: create an account. Returns `key` (shown once) and `deposit_address`.
+- GET /v1/balance: proofs left. Requires the key.
+- POST /v1/proof with JSON {"fingerprint": "<64 hex>"}: make a proof. Returns `txid`, `viewing_key`, `proofs_left`. Requires the key.
+- After a payment of 500,000 BTCZ to the deposit address and 2 confirmations, 100 proofs are credited automatically.
+
+## Verify a proof (ZCheck)
+
+Needs a synced BitcoinZ node, Python 3, the original file (or its fingerprint), the txid and the viewing key.
+
+`python3 ZCheck.py --txid <txid> --viewing-key <zxviews...> --file MyFile.pdf`
+
+Answers: `VALID` (with block number and date in UTC) or `NOT VALID` (the file was changed, or the key does not match).
+
+## Honest limits
+
+- The operator's server sees the fingerprint (and, for timestamp_text, the text) when it is submitted. It does not log them and does not store which proof belongs to which account.
+- One operator, one server: if it is down, no new proofs can be made. Existing proofs stay verifiable with ZCheck on any BitcoinZ node.
+- Quantum: the SHA-256 fingerprint and its date are expected to hold up against quantum computers. The privacy of shielded transactions relies on today's zk-SNARK cryptography, which is not post-quantum.
+- BitcoinZ is a small chain with thin trading volume.
+
+## Docs
+
+- [README and full documentation](https://github.com/ZKStamp/Proof100): how it works, API, MCP setup, trust model
+- [ZCheck verifier source](https://github.com/ZKStamp/Proof100/blob/main/zcheck/ZCheck.py): the script that checks a proof
+- [60-second demo video](https://youtu.be/t2G2CUKyamo): an AI agent stamps an idea, ZCheck says VALID, then NOT VALID with one letter changed
+
+## Optional
+
+- [Server source code](https://github.com/ZKStamp/Proof100/tree/main/server): Flask API, MCP endpoint, payment watcher
+- [Deployment examples](https://github.com/ZKStamp/Proof100/tree/main/deploy): systemd units, nginx site, config templates
