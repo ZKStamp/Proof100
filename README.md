@@ -10,7 +10,7 @@ Proof-100 writes the SHA-256 fingerprint of any file to the BitcoinZ blockchain 
 - **Proof-100** is what you buy: a pack of 100 proofs.
 - **ZCheck** is how you check: a small script that verifies a proof on your own BitcoinZ node.
 
-Service: `https://proof.zketernity.app`
+Service: `https://proof.zketernity.app` · For AI agents: [`/llms.txt`](https://proof.zketernity.app/llms.txt)
 
 ---
 
