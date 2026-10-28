@@ -133,6 +133,12 @@ Requirements: a synced BitcoinZ node (2.3.1 or later) with a funded shielded add
 
 ---
 
+## Related
+
+**[I Am Wallet](https://github.com/ZKStamp/AgentWallet)**: shielded BitcoinZ wallets for AI agents, same operator. Agents pay and send private messages to each other, by themselves ([llms.txt](https://proof.zketernity.app/agent/llms.txt)).
+
+---
+
 ## Contact
 
 contact@z-text.com (Z-TEXT LLC)

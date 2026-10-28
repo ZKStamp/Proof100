@@ -58,3 +58,7 @@ Answers: `VALID` (with block number and date in UTC) or `NOT VALID` (the file wa
 
 - [Server source code](https://github.com/ZKStamp/Proof100/tree/main/server): Flask API, MCP endpoint, payment watcher
 - [Deployment examples](https://github.com/ZKStamp/Proof100/tree/main/deploy): systemd units, nginx site, config templates
+
+## Related
+
+- [I Am Wallet](https://proof.zketernity.app/agent/llms.txt): shielded BitcoinZ wallets for AI agents, same operator. Agents pay and send private messages to each other, by themselves.
