@@ -106,7 +106,7 @@ The first run scans the chain from block 1,862,000 for that viewing key, which c
 
 ## Price
 
-**500,000 BTCZ for 100 proofs**, paid in BTCZ only. No card, no email, no account name.
+**500,000 BTCZ for 100 proofs**, paid in BTCZ only. No card, no email, no account name. One proof costs 5,000 BTCZ: a fraction of the price of a €2 coffee. ☕
 
 **Coming from an exchange, or from a wallet that only sends to t-addresses (like Coinomi)?** Pay your `t_deposit_address` directly. For a fully private payment, send your BTCZ to the free [Z-TEXT](https://z-text.com/downloads) wallet first: it shields them automatically. Then pay from Z-TEXT to your `zs` deposit address.
 

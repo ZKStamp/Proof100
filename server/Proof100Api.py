@@ -49,7 +49,7 @@ def account():
     b = balance_dict(key)
     return jsonify({"ok": True, "key": key, "deposit_address": addr,
                     "t_deposit_address": b.get("t_deposit_address"), "t_deposit_note": T_PRIVACY_NOTE,
-                    "payment": "500,000 BTCZ to either address (or both together) = 100 proofs, credited after 2 confirmations.",
+                    "payment": "500,000 BTCZ to either address (or both together) = 100 proofs, credited after 2 confirmations. One proof costs 5,000 BTCZ: a fraction of the price of a €2 coffee.",
                     "free_proofs": free, "note": note, "funding_tip": FUNDING_TIP})
 
 TOOLS = [
