@@ -105,6 +105,8 @@ The first run scans the chain from block 1,862,000 for that viewing key, which c
 
 **500,000 BTCZ for 100 proofs**, paid in BTCZ only. No card, no email, no account name.
 
+**Coming from an exchange, or from a wallet that only sends to t-addresses (like Coinomi)?** Your deposit address is shielded (zs). Send your BTCZ to the free [Z-TEXT](https://z-text.com/downloads) wallet first: it shields them automatically. Then pay from Z-TEXT to your deposit address.
+
 Questions, or no BTCZ yet? Write to contact@z-text.com. We'll help you find where to get BTCZ.
 
 ---

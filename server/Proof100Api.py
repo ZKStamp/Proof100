@@ -4,6 +4,8 @@ from Proof100Core import make_proof, create_account, db, hash_key
 
 app = Flask(__name__)
 
+FUNDING_TIP = "Coming from an exchange, or from a wallet that only sends to t-addresses (like Coinomi)? Send your BTCZ to the free Z-TEXT wallet first (https://z-text.com/downloads): it shields them automatically. Then pay from Z-TEXT to your zs address."
+
 def get_key():
     h = (request.headers.get("Authorization", "") or request.headers.get("X-API-Key", "")).strip()
     while h.lower().startswith("bearer"):
@@ -17,7 +19,7 @@ def balance_dict(key):
     con.close()
     if not row:
         return {"ok": False, "error": "invalid key"}
-    return {"ok": True, "proofs_left": row[0], "deposit_address": row[1]}
+    return {"ok": True, "proofs_left": row[0], "deposit_address": row[1], "funding_tip": FUNDING_TIP}
 
 @app.route("/v1/proof", methods=["POST"])
 def proof():
@@ -37,7 +39,7 @@ def account():
     if free:
         note += " Free trial: %d proofs credited, no payment needed." % free
     return jsonify({"ok": True, "key": key, "deposit_address": addr,
-                    "free_proofs": free, "note": note})
+                    "free_proofs": free, "note": note, "funding_tip": FUNDING_TIP})
 
 TOOLS = [
     {"name": "timestamp_fingerprint",
