@@ -4,6 +4,7 @@ from Proof100Core import make_proof, create_account, db, hash_key, t_address_for
 
 app = Flask(__name__)
 
+ZS_NOTE = "Paying to the zs address? Use Z-TEXT or a full-node wallet. From any other wallet, use the t-address."
 FUNDING_TIP = "Paying from an exchange or a t-only wallet (like Coinomi)? Send to your t_deposit_address directly. For a fully private payment, send your BTCZ to the free Z-TEXT wallet first (https://z-text.com/downloads): it shields them automatically. Then pay from Z-TEXT to your zs deposit_address."
 
 def get_key():
@@ -23,7 +24,7 @@ def balance_dict(key):
         t_addr = t_address_for(row[2])
     except Exception:
         t_addr = None
-    out = {"ok": True, "proofs_left": row[0], "deposit_address": row[1]}
+    out = {"ok": True, "proofs_left": row[0], "deposit_address": row[1], "deposit_note": ZS_NOTE}
     if t_addr:
         out.update({"t_deposit_address": t_addr, "t_deposit_note": T_PRIVACY_NOTE})
     out["funding_tip"] = FUNDING_TIP
@@ -47,7 +48,7 @@ def account():
     if free:
         note += " Free trial: %d proofs credited, no payment needed." % free
     b = balance_dict(key)
-    return jsonify({"ok": True, "key": key, "deposit_address": addr,
+    return jsonify({"ok": True, "key": key, "deposit_address": addr, "deposit_note": ZS_NOTE,
                     "t_deposit_address": b.get("t_deposit_address"), "t_deposit_note": T_PRIVACY_NOTE,
                     "payment": "500,000 BTCZ to either address (or both together) = 100 proofs, credited after 2 confirmations. One proof costs 5,000 BTCZ: a fraction of the price of a €2 coffee.",
                     "free_proofs": free, "note": note, "funding_tip": FUNDING_TIP})

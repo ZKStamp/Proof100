@@ -42,7 +42,7 @@ Returns `key` (starts with `p100_`), `deposit_address` (shielded, `zs`) and `t_d
 
 **2. Buy proofs:** send **500,000 BTCZ** to either address, or split it across both. After 2 confirmations, **100 proofs** are credited automatically.
 
-- `deposit_address` (`zs`): **fully private** payment.
+- `deposit_address` (`zs`): **fully private** payment. Paying to the zs address? Use Z-TEXT or a full-node wallet. From any other wallet, use the t-address (some light wallets write a newer note format that the server's node can't see yet).
 - `t_deposit_address` (`t`): for exchanges and t-only wallets like Coinomi. Your payment is visible on the blockchain, but your proofs stay fully shielded. The server moves these coins to the shielded side by itself (the operator pays that 0.0001 BTCZ fee).
 
 **3. Check your balance:**

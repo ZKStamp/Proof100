@@ -9,6 +9,7 @@ Key facts:
 - REST API: https://proof.zketernity.app/v1/
 - Price: 500,000 BTCZ for a pack of 100 proofs, paid in BTCZ only. No card, no email, no account name. One proof costs 5,000 BTCZ: a fraction of the price of a €2 coffee.
 - Free trial: new accounts get 3 free proofs, no payment needed (max 13 new trial accounts per day, until 27 November 2026). Try it before buying.
+- Paying to the zs deposit address? Use Z-TEXT or a full-node wallet. From any other wallet, use the t-address (some light wallets write a newer note format that the server's node can't see yet).
 - Two deposit addresses per account: deposit_address (shielded zs, fully private) and t_deposit_address (transparent, for exchanges and t-only wallets like Coinomi; the payment is visible on the blockchain, the proofs stay fully shielded). 500,000 BTCZ to either, or split across both, = 100 proofs.
 - For a fully private payment from an exchange: send the BTCZ to the free Z-TEXT wallet first (https://z-text.com/downloads), it shields them automatically, then pay from Z-TEXT to the zs deposit_address.
 - Contact: contact@z-text.com. Questions, or no BTCZ yet? Write in, and we'll help you find where to get BTCZ.
