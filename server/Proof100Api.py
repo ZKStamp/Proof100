@@ -1,10 +1,10 @@
 import json, hashlib
 from flask import Flask, request, jsonify
-from Proof100Core import make_proof, create_account, db, hash_key
+from Proof100Core import make_proof, create_account, db, hash_key, t_address_for, T_PRIVACY_NOTE
 
 app = Flask(__name__)
 
-FUNDING_TIP = "Coming from an exchange, or from a wallet that only sends to t-addresses (like Coinomi)? Send your BTCZ to the free Z-TEXT wallet first (https://z-text.com/downloads): it shields them automatically. Then pay from Z-TEXT to your zs address."
+FUNDING_TIP = "Paying from an exchange or a t-only wallet (like Coinomi)? Send to your t_deposit_address directly. For a fully private payment, send your BTCZ to the free Z-TEXT wallet first (https://z-text.com/downloads): it shields them automatically. Then pay from Z-TEXT to your zs deposit_address."
 
 def get_key():
     h = (request.headers.get("Authorization", "") or request.headers.get("X-API-Key", "")).strip()
@@ -14,12 +14,20 @@ def get_key():
 
 def balance_dict(key):
     con = db()
-    row = con.execute("SELECT proofs_left, deposit_address FROM accounts WHERE key_hash=?",
+    row = con.execute("SELECT proofs_left, deposit_address, id FROM accounts WHERE key_hash=?",
                       (hash_key(key),)).fetchone()
     con.close()
     if not row:
         return {"ok": False, "error": "invalid key"}
-    return {"ok": True, "proofs_left": row[0], "deposit_address": row[1], "funding_tip": FUNDING_TIP}
+    try:
+        t_addr = t_address_for(row[2])
+    except Exception:
+        t_addr = None
+    out = {"ok": True, "proofs_left": row[0], "deposit_address": row[1]}
+    if t_addr:
+        out.update({"t_deposit_address": t_addr, "t_deposit_note": T_PRIVACY_NOTE})
+    out["funding_tip"] = FUNDING_TIP
+    return out
 
 @app.route("/v1/proof", methods=["POST"])
 def proof():
@@ -38,7 +46,10 @@ def account():
     note = "Save your key now: it is shown only once."
     if free:
         note += " Free trial: %d proofs credited, no payment needed." % free
+    b = balance_dict(key)
     return jsonify({"ok": True, "key": key, "deposit_address": addr,
+                    "t_deposit_address": b.get("t_deposit_address"), "t_deposit_note": T_PRIVACY_NOTE,
+                    "payment": "500,000 BTCZ to either address (or both together) = 100 proofs, credited after 2 confirmations.",
                     "free_proofs": free, "note": note, "funding_tip": FUNDING_TIP})
 
 TOOLS = [
@@ -55,7 +66,7 @@ TOOLS = [
                      "properties": {"text": {"type": "string", "description": "The exact text to timestamp"}},
                      "required": ["text"]}},
     {"name": "check_balance",
-     "description": "Show how many Proof-100 proofs are left and the BTCZ deposit address for buying more.",
+     "description": "Show how many Proof-100 proofs are left and the two BTCZ deposit addresses for buying more: deposit_address (shielded zs, fully private) and t_deposit_address (transparent, for exchanges and t-only wallets like Coinomi; the payment is visible on the blockchain, the proofs stay shielded). 500,000 BTCZ to either (or both together) = 100 proofs after 2 confirmations.",
      "inputSchema": {"type": "object", "properties": {}}},
 ]
 

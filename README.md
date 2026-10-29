@@ -36,11 +36,14 @@ Base URL: `https://proof.zketernity.app`
 curl -s -X POST https://proof.zketernity.app/v1/account
 ```
 
-Returns `key` (starts with `p100_`) and `deposit_address`.
+Returns `key` (starts with `p100_`), `deposit_address` (shielded, `zs`) and `t_deposit_address` (transparent, `t`).
 
 **Free trial:** new accounts get **3 free proofs**, no payment needed (limited to 13 new trial accounts per day, until 27 November 2026). The response shows `free_proofs`.
 
-**2. Buy proofs:** send **500,000 BTCZ** to your `deposit_address`. After 2 confirmations, **100 proofs** are credited automatically.
+**2. Buy proofs:** send **500,000 BTCZ** to either address, or split it across both. After 2 confirmations, **100 proofs** are credited automatically.
+
+- `deposit_address` (`zs`): **fully private** payment.
+- `t_deposit_address` (`t`): for exchanges and t-only wallets like Coinomi. Your payment is visible on the blockchain, but your proofs stay fully shielded. The server moves these coins to the shielded side by itself (the operator pays that 0.0001 BTCZ fee).
 
 **3. Check your balance:**
 
@@ -105,7 +108,7 @@ The first run scans the chain from block 1,862,000 for that viewing key, which c
 
 **500,000 BTCZ for 100 proofs**, paid in BTCZ only. No card, no email, no account name.
 
-**Coming from an exchange, or from a wallet that only sends to t-addresses (like Coinomi)?** Your deposit address is shielded (zs). Send your BTCZ to the free [Z-TEXT](https://z-text.com/downloads) wallet first: it shields them automatically. Then pay from Z-TEXT to your deposit address.
+**Coming from an exchange, or from a wallet that only sends to t-addresses (like Coinomi)?** Pay your `t_deposit_address` directly. For a fully private payment, send your BTCZ to the free [Z-TEXT](https://z-text.com/downloads) wallet first: it shields them automatically. Then pay from Z-TEXT to your `zs` deposit address.
 
 Questions, or no BTCZ yet? Write to contact@z-text.com. We'll help you find where to get BTCZ.
 

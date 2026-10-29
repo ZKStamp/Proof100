@@ -9,7 +9,8 @@ Key facts:
 - REST API: https://proof.zketernity.app/v1/
 - Price: 500,000 BTCZ for a pack of 100 proofs, paid in BTCZ only. No card, no email, no account name.
 - Free trial: new accounts get 3 free proofs, no payment needed (max 13 new trial accounts per day, until 27 November 2026). Try it before buying.
-- Paying from an exchange or a t-address-only wallet (like Coinomi)? The deposit address is shielded (zs). Send the BTCZ to the free Z-TEXT wallet first (https://z-text.com/downloads): it shields them automatically. Then pay from Z-TEXT to the deposit address.
+- Two deposit addresses per account: deposit_address (shielded zs, fully private) and t_deposit_address (transparent, for exchanges and t-only wallets like Coinomi; the payment is visible on the blockchain, the proofs stay fully shielded). 500,000 BTCZ to either, or split across both, = 100 proofs.
+- For a fully private payment from an exchange: send the BTCZ to the free Z-TEXT wallet first (https://z-text.com/downloads), it shields them automatically, then pay from Z-TEXT to the zs deposit_address.
 - Contact: contact@z-text.com. Questions, or no BTCZ yet? Write in, and we'll help you find where to get BTCZ.
 - Your file never leaves your machine: only its SHA-256 fingerprint (64 hex characters) is sent.
 - Each proof goes to a brand-new shielded address. You get back a transaction ID (txid) and that address's viewing key.
@@ -23,16 +24,16 @@ Key facts:
 
 - timestamp_fingerprint: timestamp a SHA-256 fingerprint. Returns txid and viewing key.
 - timestamp_text: the server hashes a short text (the text is not stored) and timestamps the fingerprint.
-- check_balance: proofs left and the account's deposit address.
+- check_balance: proofs left and the account's two deposit addresses (zs and t).
 
 Authentication: send the account key as the header `Authorization: Bearer <key>` (or `X-API-Key: <key>`). Keys start with `p100_`.
 
 ## REST API
 
-- POST /v1/account: create an account. Returns `key` (shown once), `deposit_address` and `free_proofs` (3 during the free trial).
+- POST /v1/account: create an account. Returns `key` (shown once), `deposit_address` (zs), `t_deposit_address` (t) and `free_proofs` (3 during the free trial).
 - GET /v1/balance: proofs left. Requires the key.
 - POST /v1/proof with JSON {"fingerprint": "<64 hex>"}: make a proof. Returns `txid`, `viewing_key`, `proofs_left`. Requires the key.
-- After a payment of 500,000 BTCZ to the deposit address and 2 confirmations, 100 proofs are credited automatically.
+- After a payment of 500,000 BTCZ (to either deposit address, or both together) and 2 confirmations, 100 proofs are credited automatically.
 
 ## Verify a proof (ZCheck)
 
