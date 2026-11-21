@@ -2,13 +2,13 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.ZKStamp/proof100",
   "title": "ZKStamp Proof-100",
-  "description": "Shielded proof-of-existence timestamps on BitcoinZ (zk-SNARKs). Free trial: 3 proofs.",
+  "description": "Free stamp_hash: tamper-evident timestamps for agent outputs, no key. Shielded, on BitcoinZ.",
   "repository": {
     "url": "https://github.com/ZKStamp/Proof100",
     "source": "github"
   },
   "websiteUrl": "https://proof.zketernity.app/llms.txt",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "remotes": [
     {
       "type": "streamable-http",
@@ -16,8 +16,8 @@
       "headers": [
         {
           "name": "Authorization",
-          "description": "Bearer followed by your Proof-100 account key (starts with p100_)",
-          "isRequired": true,
+          "description": "Only for paid tools: Bearer followed by your Proof-100 account key (starts with p100_). Not needed for the free stamp_hash and check_stamp.",
+          "isRequired": false,
           "isSecret": true
         }
       ]

@@ -1,6 +1,7 @@
 import json, hashlib
 from flask import Flask, request, jsonify
 from Proof100Core import make_proof, create_account, db, hash_key, t_address_for, T_PRIVACY_NOTE
+import FreeStamp
 
 app = Flask(__name__)
 
@@ -12,6 +13,9 @@ def get_key():
     while h.lower().startswith("bearer"):
         h = h[6:].strip()
     return h
+
+def client_ip():
+    return request.headers.get("X-Real-IP") or request.remote_addr or "unknown"
 
 def balance_dict(key):
     con = db()
@@ -53,7 +57,33 @@ def account():
                     "payment": "500,000 BTCZ to either address (or both together) = 100 proofs, credited after 2 confirmations. One proof costs 5,000 BTCZ: a fraction of the price of a €2 coffee.",
                     "free_proofs": free, "note": note, "funding_tip": FUNDING_TIP})
 
+@app.route("/v1/free/stamp", methods=["POST"])
+def free_stamp():
+    data = request.get_json(silent=True) or {}
+    r = FreeStamp.stamp_hash(data.get("sha256", data.get("fingerprint", "")), client_ip())
+    return jsonify(r), (200 if r["ok"] else 400)
+
+@app.route("/v1/free/check", methods=["GET"])
+def free_check():
+    r = FreeStamp.check_stamp(request.args.get("txid", ""), request.args.get("sha256"))
+    return jsonify(r), (200 if r["ok"] else 400)
+
 TOOLS = [
+    {"name": "stamp_hash",
+     "description": "FREE, no key, no wallet, no coin: write a tamper-evident, dated receipt of any data on the BitcoinZ blockchain in one call. Pass the SHA-256 hash (64 hex characters) of your output, file or log; the data itself never leaves you. The hash goes into the encrypted memo of a shielded (zk-SNARK) transaction sent to a new one-time address; the next block (about 2.5 minutes on average) dates it. Returns txid and viewing_key: keep both. Later, check_stamp(txid, sha256) answers MATCH or NO MATCH with the block date, so anyone can prove the data existed then and was not changed. Takes about 10 to 60 seconds. Free stamps are paid by the operator and limited: 100 in total, 3 per caller per day, 30 per day overall.",
+     "inputSchema": {"type": "object",
+                     "properties": {"sha256": {"type": "string",
+                                               "description": "SHA-256 hash of the data, 64 hexadecimal characters (case-insensitive)",
+                                               "pattern": "^[0-9a-fA-F]{64}$"}},
+                     "required": ["sha256"]}},
+    {"name": "check_stamp",
+     "description": "FREE, no key: check a free stamp. Give the txid returned by stamp_hash, and optionally the SHA-256 hash you want to verify. Returns the stamped hash, the block number and date (UTC), and MATCH or NO MATCH. This answer comes from the operator's server; for a check that trusts nobody, run ZCheck with the txid and viewing_key on any BitcoinZ node.",
+     "inputSchema": {"type": "object",
+                     "properties": {"txid": {"type": "string", "description": "Transaction ID returned by stamp_hash (64 hex characters)",
+                                             "pattern": "^[0-9a-fA-F]{64}$"},
+                                    "sha256": {"type": "string", "description": "Optional: the SHA-256 hash to compare with the stamp",
+                                               "pattern": "^[0-9a-fA-F]{64}$"}},
+                     "required": ["txid"]}},
     {"name": "timestamp_fingerprint",
      "description": "Create a private, dated proof that a file or data existed, without sending the data. Use this when you already have the SHA-256 fingerprint (hash) of a file; for a short text, use timestamp_text instead. Compute the hash locally over the exact bytes (for example: sha256sum MyFile.pdf) and pass the 64-character hex string. The fingerprint is written into the encrypted memo of a shielded (zk-SNARK) BitcoinZ transaction, sent to a new address made for this proof only; the block timestamp dates it. Takes about 10 to 60 seconds and uses 1 proof from the account (requires the account key in the Authorization header). Returns ok, txid, viewing_key, explorer link and proofs_left. Tell the user to keep the txid and viewing_key: together they let anyone verify this one proof with ZCheck, and reveal nothing else. On error (invalid fingerprint, invalid key, no proofs left, send failed) no proof is used.",
      "inputSchema": {"type": "object",
@@ -86,7 +116,7 @@ def mcp():
     if method == "initialize":
         pv = (msg.get("params") or {}).get("protocolVersion", "2025-03-26")
         return ok({"protocolVersion": pv, "capabilities": {"tools": {}},
-                   "serverInfo": {"name": "Proof-100", "version": "0.1"}})
+                   "serverInfo": {"name": "Proof-100", "version": "0.3"}})
     if method == "ping":
         return ok({})
     if method == "tools/list":
@@ -94,7 +124,11 @@ def mcp():
     if method == "tools/call":
         p = msg.get("params") or {}
         name, args, key = p.get("name"), p.get("arguments") or {}, get_key()
-        if name == "timestamp_fingerprint":
+        if name == "stamp_hash":
+            r = FreeStamp.stamp_hash(args.get("sha256", ""), client_ip())
+        elif name == "check_stamp":
+            r = FreeStamp.check_stamp(args.get("txid", ""), args.get("sha256"))
+        elif name == "timestamp_fingerprint":
             r = make_proof(key, str(args.get("fingerprint", "")))
         elif name == "timestamp_text":
             fp = hashlib.sha256(str(args.get("text", "")).encode("utf-8")).hexdigest()

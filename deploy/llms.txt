@@ -2,6 +2,15 @@
 
 > Proof-100 writes the SHA-256 fingerprint of any file or text to the BitcoinZ blockchain in a shielded (zk-SNARK) transaction. You get a dated proof that the data existed at that time. Nobody on the blockchain can see the fingerprint or who made it. AI agents can use it directly through MCP. Slogan: "Stamp it with Z. Before Q."
 
+## Free for AI agents: stamp_hash (no key, no wallet, no coin)
+
+- MCP endpoint: https://proof.zketernity.app/mcp (no Authorization header needed for the free tools)
+- stamp_hash(sha256): writes a tamper-evident, dated receipt of the SHA-256 hash of any output, file or log. Returns txid and viewing_key. The next BitcoinZ block (about 2.5 minutes on average) dates it.
+- check_stamp(txid, sha256 optional): returns the stamped hash, block number, date (UTC) and MATCH or NO MATCH.
+- REST: POST /v1/free/stamp with JSON {"sha256": "<64 hex>"} · GET /v1/free/check?txid=<txid>&sha256=<64 hex>
+- Free stamps are paid by the operator and limited: 100 in total, 3 per caller per day, 30 per day overall.
+- check_stamp answers from the operator's server. To check without trusting the operator, use ZCheck with the txid and viewing key on any BitcoinZ node.
+
 Key facts:
 
 - Service base URL: https://proof.zketernity.app
@@ -23,14 +32,18 @@ Key facts:
 
 ## MCP tools
 
+- stamp_hash: FREE, no key. Timestamp a SHA-256 hash. Returns txid and viewing key.
+- check_stamp: FREE, no key. MATCH or NO MATCH, with block number and date, for a free stamp.
 - timestamp_fingerprint: timestamp a SHA-256 fingerprint. Returns txid and viewing key.
 - timestamp_text: the server hashes a short text (the text is not stored) and timestamps the fingerprint.
 - check_balance: proofs left and the account's two deposit addresses (zs and t).
 
-Authentication: send the account key as the header `Authorization: Bearer <key>` (or `X-API-Key: <key>`). Keys start with `p100_`.
+Authentication (paid tools only): send the account key as the header `Authorization: Bearer <key>` (or `X-API-Key: <key>`). Keys start with `p100_`.
 
 ## REST API
 
+- POST /v1/free/stamp with JSON {"sha256": "<64 hex>"}: free stamp, no key.
+- GET /v1/free/check?txid=<txid>&sha256=<64 hex>: check a free stamp, no key.
 - POST /v1/account: create an account. Returns `key` (shown once), `deposit_address` (zs), `t_deposit_address` (t) and `free_proofs` (3 during the free trial).
 - GET /v1/balance: proofs left. Requires the key.
 - POST /v1/proof with JSON {"fingerprint": "<64 hex>"}: make a proof. Returns `txid`, `viewing_key`, `proofs_left`. Requires the key.

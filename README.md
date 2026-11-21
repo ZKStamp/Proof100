@@ -14,6 +14,34 @@ Service: `https://proof.zketernity.app` · For AI agents: [`/llms.txt`](https://
 
 ---
 
+## 🆓 Free: `stamp_hash` for AI agents (no key, no wallet, no coin)
+
+**Tamper-evident receipts for agent outputs, in one MCP call.**
+
+Add this MCP server, with no sign-in and no header:
+
+```
+https://proof.zketernity.app/mcp
+```
+
+1. Your agent hashes its output (SHA-256) and calls `stamp_hash(sha256)`.
+2. It gets back a `txid` and a `viewing_key`. The next BitcoinZ block (about 2.5 minutes on average) dates the stamp.
+3. Later, anyone calls `check_stamp(txid, sha256)` and gets `MATCH` or `NO MATCH`, with the block number and date.
+
+Same thing over REST:
+
+```bash
+FP=$(sha256sum MyOutput.json | cut -d' ' -f1)
+curl -s -X POST https://proof.zketernity.app/v1/free/stamp -H "Content-Type: application/json" -d "{\"sha256\": \"$FP\"}"
+curl -s "https://proof.zketernity.app/v1/free/check?txid=TXID&sha256=$FP"
+```
+
+Free stamps are paid by the operator and limited: **100 in total, 3 per caller per day, 30 per day overall.**
+`check_stamp` answers from our server. To check without trusting us, run [ZCheck](zcheck/ZCheck.py) with the txid and viewing key on any BitcoinZ node.
+Privacy: the server keeps the txid and the one-time address (so `check_stamp` can read the stamp back). It does not store your hash, and it does not link stamps to callers (callers are counted only as a salted IP hash, for the daily limit).
+
+---
+
 ## How it works
 
 1. You send a **fingerprint** (SHA-256, 64 hex characters). Your file never leaves your machine.
@@ -79,11 +107,13 @@ Tools:
 
 | Tool | What it does |
 |---|---|
+| `stamp_hash` | **Free, no key.** Stamp a SHA-256 hash. Returns txid + viewing key. |
+| `check_stamp` | **Free, no key.** MATCH / NO MATCH + block date for a free stamp. |
 | `timestamp_fingerprint` | Timestamp a SHA-256 fingerprint. Returns txid + viewing key. |
 | `timestamp_text` | The server hashes a short text (the text is not stored) and timestamps the fingerprint. |
 | `check_balance` | Proofs left and your deposit address. |
 
-In Claude: add a custom connector with that URL, choose no sign-in, and add the request header `Authorization` = `Bearer YOUR_KEY`.
+In Claude: add a custom connector with that URL and choose no sign-in. That is enough for the free tools. For paid proofs, add the request header `Authorization` = `Bearer YOUR_KEY`.
 
 ---
 
@@ -131,6 +161,8 @@ Questions, or no BTCZ yet? Write to contact@z-text.com. We'll help you find wher
   - `Proof100Api.py`: REST API and MCP endpoint (listens on 127.0.0.1:5100)
   - `CheckPayments.py`, `CreateAccount.py`, `HealthCheck.py`
   - `GrantProofs.py`: operator tool, creates an account with free proofs (for testers)
+  - `FreeStamp.py`: the free `stamp_hash` / `check_stamp` tools and their limits
+  - `FreeReport.py`: operator report: free stamps made and number of different callers
 - `deploy/`: example systemd units, nginx site and config templates.
 - `zcheck/ZCheck.py`: the verifier.
 
